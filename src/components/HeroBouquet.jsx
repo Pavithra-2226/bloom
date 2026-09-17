@@ -1,8 +1,7 @@
 import { forwardRef } from 'react'
 import './HeroBouquet.css'
-
-const IMG_BASE =
-  'src/assets/hero/jo1.jpg'
+import jo1 from '../assets/hero/jo1.jpg'
+const IMG_BASE = jo1
 
 const IMG_PARAMS =
   'auto=format&fit=crop&q=85'
