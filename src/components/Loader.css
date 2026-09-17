@@ -1,0 +1,489 @@
+/* =========================================================
+   BLOOM — 3D BOUQUET BURST LOADER
+   ========================================================= */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+  isolation: isolate;
+
+  background: var(--color-bg);
+
+  will-change: transform;
+}
+
+.loader__background {
+  position: absolute;
+  inset: -15%;
+
+  z-index: -2;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(255, 247, 241, 0.98) 0%,
+      rgba(255, 247, 241, 0.82) 30%,
+      rgba(249, 238, 232, 0.55) 58%,
+      var(--color-bg) 100%
+    );
+
+  pointer-events: none;
+}
+
+.loader__background::before {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(224, 190, 181, 0.16),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(194, 213, 181, 0.16),
+      transparent 30%
+    );
+
+  filter: blur(20px);
+}
+
+/* =========================================================
+   3D STAGE
+   ========================================================= */
+
+.loader__stage {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  perspective: 1400px;
+  perspective-origin: 50% 48%;
+
+  transform-style: preserve-3d;
+}
+
+/* =========================================================
+   BOUQUETS
+   ========================================================= */
+
+.loader__bouquet {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: clamp(150px, 19vw, 280px);
+  height: auto;
+
+  object-fit: contain;
+
+  /*
+    IMPORTANT:
+    These images must be transparent PNG/WebP.
+    No rectangular photograph background.
+  */
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+
+  pointer-events: none;
+
+  transform-style: preserve-3d;
+
+  will-change:
+    transform,
+    opacity;
+
+  filter:
+    saturate(1.02)
+    contrast(1.02)
+    drop-shadow(
+      0 24px 28px rgba(72, 46, 42, 0.12)
+    );
+}
+
+/* =========================================================
+   DIFFERENT DEPTHS
+   ========================================================= */
+
+.bouquet--one {
+  width: clamp(220px, 27vw, 370px);
+  z-index: 8;
+}
+
+.bouquet--two {
+  width: clamp(190px, 23vw, 330px);
+  z-index: 7;
+
+  filter:
+    saturate(1.02)
+    drop-shadow(
+      0 20px 24px rgba(72, 46, 42, 0.1)
+    );
+}
+
+.bouquet--three {
+  width: clamp(130px, 17vw, 240px);
+  z-index: 4;
+
+  filter:
+    blur(0.3px)
+    saturate(0.96)
+    drop-shadow(
+      0 16px 20px rgba(72, 46, 42, 0.08)
+    );
+}
+
+.bouquet--four {
+  width: clamp(125px, 16vw, 225px);
+  z-index: 5;
+}
+
+.bouquet--five {
+  width: clamp(105px, 13vw, 190px);
+  z-index: 2;
+
+  filter:
+    blur(0.7px)
+    saturate(0.92)
+    drop-shadow(
+      0 12px 18px rgba(72, 46, 42, 0.07)
+    );
+}
+
+.bouquet--six {
+  width: clamp(105px, 13vw, 190px);
+  z-index: 2;
+
+  filter:
+    blur(0.7px)
+    saturate(0.92)
+    drop-shadow(
+      0 12px 18px rgba(72, 46, 42, 0.07)
+    );
+}
+
+.bouquet--seven {
+  width: clamp(90px, 11vw, 165px);
+  z-index: 1;
+
+  filter:
+    blur(1px)
+    saturate(0.9);
+}
+
+.bouquet--eight {
+  width: clamp(90px, 11vw, 165px);
+  z-index: 1;
+
+  filter:
+    blur(1px)
+    saturate(0.9);
+}
+
+/* =========================================================
+   BLOOM BRAND
+   ========================================================= */
+
+.loader__brand {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  z-index: 3;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  transform:
+    translate(-50%, -50%);
+
+  text-align: center;
+
+  pointer-events: none;
+}
+
+.loader__logo {
+  margin: 0;
+
+  font-family: var(--font-display);
+
+  font-size: clamp(
+    58px,
+    11vw,
+    142px
+  );
+
+  line-height: 0.9;
+
+  font-weight: var(--fw-medium);
+
+  color: var(--color-text);
+
+  letter-spacing: 0.28em;
+
+  white-space: nowrap;
+
+  text-shadow:
+    0 12px 40px rgba(69, 47, 43, 0.08);
+
+  will-change:
+    transform,
+    opacity,
+    letter-spacing;
+}
+
+.loader__line {
+  display: block;
+
+  width: clamp(
+    55px,
+    8vw,
+    100px
+  );
+
+  height: 1px;
+
+  margin-top: 20px;
+
+  background: var(--color-text-soft);
+
+  opacity: 0.55;
+
+  transform-origin: center;
+}
+
+.loader__tagline {
+  margin: 13px 0 0;
+
+  font-family: var(--font-body);
+
+  font-size: clamp(
+    12px,
+    1.4vw,
+    16px
+  );
+
+  font-style: italic;
+
+  font-weight: var(--fw-regular);
+
+  color: var(--color-text-soft);
+
+  letter-spacing: var(--ls-normal);
+
+  white-space: nowrap;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+/* =========================================================
+   PETALS
+   ========================================================= */
+
+.loader__petal {
+  position: absolute;
+
+  z-index: 6;
+
+  display: block;
+
+  border-radius:
+    75%
+    25%
+    75%
+    25%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f5c9c2,
+      #d98e91
+    );
+
+  box-shadow:
+    0 7px 18px
+    rgba(85, 49, 48, 0.08);
+
+  pointer-events: none;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+.loader__petal:nth-child(3n) {
+  background:
+    linear-gradient(
+      145deg,
+      #fff4eb,
+      #e8c1a9
+    );
+}
+
+.loader__petal:nth-child(4n) {
+  background:
+    linear-gradient(
+      145deg,
+      #dce7d1,
+      #9eb68f
+    );
+}
+
+.loader__petal:nth-child(5n) {
+  background:
+    linear-gradient(
+      145deg,
+      #f0d3dc,
+      #c895aa
+    );
+}
+
+/* =========================================================
+   SOFT LIGHT
+   ========================================================= */
+
+.loader__stage::after {
+  content: '';
+
+  position: absolute;
+  inset: -30%;
+
+  z-index: 10;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,255,255,0.2),
+      transparent 55%
+    );
+
+  mix-blend-mode: screen;
+
+  opacity: 0.55;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+  .loader__stage {
+    perspective: 900px;
+  }
+
+  .loader__bouquet {
+    width: 145px;
+  }
+
+  .bouquet--one {
+    width: 210px;
+  }
+
+  .bouquet--two {
+    width: 180px;
+  }
+
+  .bouquet--three,
+  .bouquet--four {
+    width: 135px;
+  }
+
+  .bouquet--five,
+  .bouquet--six {
+    width: 105px;
+  }
+
+  .bouquet--seven,
+  .bouquet--eight {
+    width: 90px;
+  }
+
+  .loader__logo {
+    font-size: clamp(
+      48px,
+      15vw,
+      76px
+    );
+
+    letter-spacing: 0.12em;
+  }
+
+  .loader__line {
+    margin-top: 15px;
+  }
+
+  .loader__tagline {
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+  .loader__logo {
+    font-size: 44px;
+  }
+
+  .bouquet--one {
+    width: 175px;
+  }
+
+  .bouquet--two {
+    width: 155px;
+  }
+
+  .bouquet--three,
+  .bouquet--four {
+    width: 115px;
+  }
+
+  .bouquet--five,
+  .bouquet--six {
+    width: 85px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .loader__stage {
+    perspective: none;
+  }
+
+  .loader__stage::after {
+    opacity: 0.2;
+  }
+
+  .loader__bouquet {
+    filter: none;
+  }
+}

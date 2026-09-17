@@ -1,0 +1,284 @@
+/* ==========================================================================
+   SignatureBouquets — a cinematic depth scene, not a carousel. Five
+   bouquets stand at different depths across a dark, editorial backdrop;
+   scroll drives one continuous value that carries the "nearest to camera"
+   position smoothly from bouquet to bouquet (see SignatureBouquets.jsx).
+   Scoped locally to a dark palette (via local custom-property overrides
+   below) so the rest of the site's light theme is completely untouched.
+   ========================================================================== */
+
+.bouquets {
+  position: relative;
+  overflow: hidden;
+  /* The section must literally fit what it pins to: header + stage are
+     laid out top-down inside one exact viewport height, sized with vh
+     so it holds together across screen heights instead of overflowing
+     below the fold once pinned (see the two rules below). */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  /* Local dark-theme overrides — scoped to this section only. Everything
+     inside .bouquets that reads var(--color-text), var(--color-text-soft)
+     or var(--color-botanical-deep) (the heading, eyebrow, intro copy and
+     captions) picks these up automatically; nothing outside this section
+     is affected. */
+  --color-text: #f3ede3;
+  --color-text-soft: rgba(243, 237, 227, 0.72);
+  --color-botanical-deep: #cdbfa1;
+
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 32%, rgba(70, 58, 46, 0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 120% 90% at 50% 100%, #050403 0%, transparent 70%),
+    linear-gradient(180deg, #16120f 0%, #0c0a08 55%, #060504 100%);
+}
+
+/* ---- Atmosphere layer: warm light ray + soft, blurred floral bokeh at
+   the edges. Purely decorative gradients — no images — sitting strictly
+   behind the header and the bouquet stage (z-index below both) so it can
+   never cover or soften the bouquets themselves. ---- */
+.bouquets__atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, rgba(255, 214, 150, 0.22) 0%, rgba(255, 214, 150, 0.07) 20%, transparent 36%),
+    radial-gradient(ellipse 34% 46% at 4% 40%, rgba(168, 96, 88, 0.32) 0%, rgba(90, 50, 42, 0.16) 46%, transparent 74%),
+    radial-gradient(ellipse 30% 42% at 98% 48%, rgba(150, 90, 70, 0.28) 0%, rgba(80, 46, 38, 0.14) 48%, transparent 76%),
+    radial-gradient(ellipse 24% 28% at 88% 6%, rgba(210, 160, 118, 0.18) 0%, transparent 72%);
+  filter: blur(1px);
+}
+
+/* Ambient floating petals — a handful of small CSS shapes drifting very
+   slowly near the edges of the scene. Kept out of the center column (so
+   they never cross the heading or the bouquets) and z-indexed with the
+   atmosphere, well below the bouquet stage. */
+.bouquets__petal {
+  position: absolute;
+  z-index: 1;
+  width: 13px;
+  height: 19px;
+  border-radius: 60% 40% 55% 45% / 55% 45% 60% 40%;
+  background: linear-gradient(160deg, rgba(224, 158, 150, 0.5), rgba(150, 82, 70, 0.22));
+  pointer-events: none;
+  animation: bouquets-petal-drift 18s ease-in-out infinite;
+}
+
+.bouquets__petal--1 { left: 6%; top: 30%; animation-duration: 16s; }
+.bouquets__petal--2 { left: 16%; top: 12%; animation-duration: 20s; animation-delay: 3s; width: 10px; height: 15px; }
+.bouquets__petal--3 { right: 8%; top: 24%; animation-duration: 17.5s; animation-delay: 1.2s; }
+.bouquets__petal--4 { right: 18%; top: 44%; animation-duration: 22s; animation-delay: 4.5s; width: 10px; height: 15px; }
+
+@keyframes bouquets-petal-drift {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  12% { opacity: 0.55; }
+  50% { transform: translate(-12px, 60px) rotate(150deg); opacity: 0.5; }
+  85% { opacity: 0.18; }
+  100% { transform: translate(8px, 120px) rotate(280deg); opacity: 0; }
+}
+
+/* Reflective floor plane beneath the bouquet row: a dark gradient with a
+   faint warm sheen, standing in for the glossy tabletop in the
+   reference. Sits above the atmosphere but below the bouquet stage. */
+.bouquets__floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4%;
+  height: 30%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 15, 11, 0) 0%,
+    rgba(14, 10, 7, 0.5) 55%,
+    rgba(5, 4, 3, 0.82) 100%
+  );
+}
+
+.bouquets__floor::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 66%;
+  height: 100%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255, 220, 180, 0.08) 0%, transparent 70%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bouquets__petal {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.bouquets__header {
+  position: relative;
+  z-index: 4;
+  max-width: 46ch;
+  /* Was a fixed var(--space-2xl) (96px) — a flat top offset that didn't
+     shrink on shorter viewports and was the first contributor to pushing
+     the stage (and the bouquets in it) below the fold once pinned. Scaled
+     to vh instead, clamped so it still clears the floating navbar pill. */
+  padding-top: clamp(3rem, 7vh, 4.5rem);
+}
+
+.bouquets__eyebrow {
+  margin-bottom: var(--space-sm);
+}
+
+.bouquets__heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-tight);
+  color: var(--color-text);
+}
+
+.bouquets__heading-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.bouquets__heading-inner {
+  display: block;
+  will-change: transform;
+}
+
+.bouquets__intro {
+  margin-top: var(--space-sm);
+  max-width: 38ch;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--color-text-soft);
+}
+
+/* ---- Cinematic scene stage -------------------------------------------- */
+.bouquets__scene-stage {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  /* Was a fixed 660px + a fixed 64px margin-top (var(--space-xl)) — on a
+     typical ~800–900px-tall viewport, header + margin + stage added up
+     to well over 1000px, so the bottom of the stage (where the bouquets
+     actually sit) rendered below the pinned viewport. Both are now sized
+     off vh so the whole section reliably fits one screen. */
+  height: clamp(300px, 44vh, 460px);
+  margin-top: clamp(0.5rem, 2.5vh, 1.5rem);
+  /* Perspective gives the depth-scaled bouquets a believable sense of
+     standing in real 3D space rather than just shrinking flat. */
+  perspective: 1400px;
+}
+
+/* One bouquet's position in the scene. Absolutely centered on the stage;
+   GSAP composites its permanent xPercent/yPercent(-50%) centering with
+   the x/y/scale/rotate/opacity it animates on top, so this rule only
+   needs to set the base size. Anchored just below the stage's vertical
+   center (was 66%, too low for the now-shorter stage) so all 5 bouquets
+   sit fully inside the visible frame with no top or bottom clipping. */
+.bouquet-scene-item {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  width: min(17vw, 210px);
+  transform-style: preserve-3d;
+}
+
+/* Idle-float layer: a separate transform target from .bouquet-scene-item
+   so the continuous small floating motion never competes with the
+   scroll-driven depth position tween on the same x/y properties. */
+.bouquet-scene-float {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  will-change: transform;
+}
+
+/* Soft, static contact shadow beneath every bouquet — reads as a real
+   object standing under studio light, independent of the dynamic
+   depth-of-field blur applied to the photo itself. Computed from the
+   feathered silhouette's own alpha (BouquetPhoto has no opaque box of
+   its own left to shadow), so the shadow follows the bouquet's shape
+   rather than a rectangle. */
+.bouquet-scene-float .bouquet-photo {
+  filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.55));
+}
+
+.bouquet-scene-float .bouquet-photo__img {
+  will-change: transform, filter;
+}
+
+.bouquet-scene-caption {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.bouquet-scene-caption__number {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wide);
+  color: var(--color-botanical-deep);
+}
+
+.bouquet-scene-caption__name {
+  font-family: var(--font-display);
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-tight);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+/* ---- Desktop: this is the pinned scroll experience. Sizing now lives
+   in the base .bouquets/.bouquets__header/.bouquets__scene-stage rules
+   above (height: 100vh there applies at every breakpoint), so nothing
+   desktop-specific is needed here beyond what the base rules already
+   set responsively. ---- */
+
+/* ---- Tablet: smaller stage + smaller bouquets; spacing matches
+   SignatureBouquets.jsx's matchMedia breakpoints ---- */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .bouquets__header {
+    max-width: 48ch;
+  }
+
+  .bouquets__scene-stage {
+    height: clamp(260px, 42vh, 380px);
+  }
+
+  .bouquet-scene-item {
+    top: 54%;
+    width: min(24vw, 160px);
+  }
+}
+
+/* ---- Mobile: smallest stage + smallest bouquets + tightest spacing so
+   the whole scene stays comfortably inside a narrow viewport ---- */
+@media (max-width: 640px) {
+  .bouquets__scene-stage {
+    height: clamp(220px, 40vh, 320px);
+  }
+
+  .bouquet-scene-item {
+    top: 52%;
+    width: min(30vw, 108px);
+  }
+
+  .bouquet-scene-caption__name {
+    font-size: 0.75rem;
+  }
+
+  .bouquets__petal {
+    display: none;
+  }
+}

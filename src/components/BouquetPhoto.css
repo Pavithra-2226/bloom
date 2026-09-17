@@ -1,0 +1,85 @@
+/* ==========================================================================
+   BouquetPhoto — a bouquet standing in the cinematic scene, not a photo
+   card. No hard rectangle: the photo is masked to a soft, feathered
+   silhouette; its leftover studio backdrop is multiplied down into the
+   dark scene at that same fade boundary; and a faint blurred echo of its
+   base stands in for a floor reflection. See the component doc comment
+   for why this is built as CSS layers rather than a real image cutout.
+   ========================================================================== */
+
+.bouquet-photo {
+  position: relative;
+  z-index: 0; /* gives this box its own stacking context, so the
+                 reflection (z-index: -1 below) and vignette never
+                 escape into a neighbouring bouquet's stacking order */
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: visible; /* the reflection lives just below this box */
+}
+
+/* Shared fade shape for both the photo and its dark vignette, so the two
+   reach zero alpha at exactly the same boundary — no seam between
+   "faded photo" and "faded dark overlay". */
+.bouquet-photo__img,
+.bouquet-photo::before {
+  -webkit-mask-image: radial-gradient(ellipse 62% 80% at 50% 50%, #000 56%, transparent 92%);
+  mask-image: radial-gradient(ellipse 62% 80% at 50% 50%, #000 56%, transparent 92%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.bouquet-photo__img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 38%;
+  display: block;
+  /* Crops in past the source photo's own studio backdrop before the mask
+     even starts fading, so there's less of it left to blend away. */
+  transform: scale(1.16);
+  will-change: transform, filter;
+}
+
+/* Dark vignette: multiplies the photo's own backdrop toward near-black
+   through the fade zone, so any leftover studio background (white,
+   beige, blue) sinks into the dark scene instead of reading as a
+   lighter rectangle floating in it. */
+.bouquet-photo::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 62% 80% at 50% 48%,
+    transparent 30%,
+    rgba(8, 6, 4, 0.5) 60%,
+    rgba(8, 6, 4, 0.92) 88%
+  );
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Stylized floor-reflection echo: a blurred, heavily faded flip of the
+   photo's own base. Not a precise mirror — an ambient one, standing in
+   for the glossy-floor reflection in the reference scene. */
+.bouquet-photo::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 6%;
+  top: 100%;
+  width: 88%;
+  height: 42%;
+  background-image: var(--bouquet-img);
+  background-size: 100% 217%;
+  background-position: 50% 100%;
+  background-repeat: no-repeat;
+  transform: scaleY(-1);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.32), transparent 78%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.32), transparent 78%);
+  filter: blur(3px) brightness(0.6) saturate(0.85);
+  opacity: 0.5;
+  pointer-events: none;
+}

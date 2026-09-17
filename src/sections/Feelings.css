@@ -1,0 +1,194 @@
+/* ==========================================================================
+   Feelings — "CHOOSE YOUR FEELING". On desktop, five feeling blocks
+   (large mask-revealed label + full-bleed photo, side by side) occupy the
+   exact same box, stacked with position:absolute, and a pinned scrub
+   timeline wipes between them via clip-path (see Feelings.jsx). On
+   tablet/mobile the blocks return to normal document flow and reveal
+   individually as the page scrolls. No cards, no grid — large editorial
+   typography and photography in generous whitespace.
+   ========================================================================== */
+
+.feelings {
+  position: relative;
+  background-color: var(--color-bg);
+  overflow: hidden;
+}
+
+.feelings__header {
+  max-width: 50ch;
+  padding-block: var(--space-2xl) var(--space-xl);
+}
+
+.feelings__eyebrow {
+  margin-bottom: var(--space-sm);
+}
+
+.feelings__heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-tight);
+  color: var(--color-text);
+}
+
+.feelings__heading-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.feelings__heading-inner {
+  display: block;
+  will-change: transform;
+}
+
+.feelings__intro {
+  margin-top: var(--space-sm);
+  max-width: 40ch;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--color-text-soft);
+}
+
+/* ---- Stage: holds all five feeling blocks --------------------------- */
+.feelings__stage {
+  position: relative;
+}
+
+/* ---- Feeling block: label + caption beside a full-bleed photo -------- */
+.feeling-block {
+  display: grid;
+  grid-template-columns: minmax(240px, 34%) 1fr;
+  align-items: center;
+  gap: var(--space-2xl);
+  padding-inline: var(--container-padding);
+}
+
+.feeling-block__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.feeling-block__index {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wider);
+  color: var(--color-botanical-deep);
+}
+
+.feeling-block__label {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 6.5vw, 6rem);
+  font-weight: var(--fw-semibold);
+  line-height: 0.96;
+  letter-spacing: var(--ls-tight);
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.feeling-block__label-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.feeling-block__label-inner {
+  display: block;
+  will-change: transform;
+}
+
+.feeling-block__caption {
+  max-width: 30ch;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body);
+  color: var(--color-text-soft);
+}
+
+.feeling-block__media {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ---- Desktop: the pinned crossfade stepper ---------------------------- */
+@media (min-width: 1025px) {
+  .feelings__stage {
+    height: 78vh;
+    min-height: 520px;
+    max-height: 760px;
+    overflow: hidden;
+  }
+
+  .feeling-block {
+    position: absolute;
+    inset: 0;
+    will-change: clip-path;
+  }
+
+  .feeling-block__media {
+    aspect-ratio: auto;
+  }
+}
+
+/* ---- Tablet/mobile: no pin, no overlap — a natural vertical flow of
+   feeling blocks, each revealing once as it scrolls into view ---------- */
+@media (max-width: 1024px) {
+  .feelings__header {
+    padding-block: var(--space-2xl) var(--space-lg);
+  }
+
+  .feelings__stage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+    padding-block: var(--space-md) var(--space-2xl);
+  }
+
+  .feeling-block {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .feeling-block__media {
+    order: -1;
+    aspect-ratio: 4 / 3;
+  }
+
+  .feeling-block__label {
+    font-size: clamp(2.5rem, 11vw, 3.5rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .feelings__stage {
+    gap: var(--space-xl);
+  }
+
+  .feeling-block__media {
+    aspect-ratio: 4 / 4.5;
+  }
+
+  .feeling-block__caption {
+    max-width: none;
+  }
+}
+
+/* ---- Reduced motion: force the natural stacked flow even on desktop
+   widths, so nothing stays hidden behind another block ------------------ */
+.feelings--stacked .feelings__stage {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  padding-block: var(--space-md) var(--space-2xl);
+}
+
+.feelings--stacked .feeling-block {
+  position: static !important;
+  clip-path: none !important;
+}

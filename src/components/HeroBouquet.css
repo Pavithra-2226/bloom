@@ -1,0 +1,170 @@
+/* ================================================================
+   BLOOM HERO BOUQUET
+   ================================================================ */
+
+.hero-bouquet {
+  position: relative;
+
+  width: 100%;
+
+  isolation: isolate;
+}
+
+/* ================================================================
+   AMBIENT GLOW
+   ================================================================ */
+
+.hero-bouquet__glow {
+  position: absolute;
+
+  inset: -12% -14%;
+
+  z-index: -1;
+
+  background:
+    radial-gradient(
+      ellipse 58% 54% at 50% 45%,
+      rgba(232, 181, 181, 0.34) 0%,
+      rgba(232, 181, 181, 0.16) 32%,
+      transparent 72%
+    );
+
+  filter: blur(40px);
+
+  opacity: 0.9;
+
+  pointer-events: none;
+}
+
+/* ================================================================
+   MAIN FLOWER PHOTOGRAPH
+   ================================================================ */
+
+.hero-bouquet__img {
+  position: relative;
+
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  aspect-ratio: 4 / 5;
+
+  object-fit: cover;
+
+  object-position: 50% 38%;
+
+  z-index: 1;
+
+  /*
+    The radial mask removes the hard photographic corners
+    and lets the bouquet dissolve into the cream background.
+  */
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse 72% 76% at 50% 45%,
+      #000 38%,
+      rgba(0, 0, 0, 0.98) 53%,
+      rgba(0, 0, 0, 0.72) 66%,
+      rgba(0, 0, 0, 0.3) 79%,
+      transparent 100%
+    );
+
+  mask-image:
+    radial-gradient(
+      ellipse 72% 76% at 50% 45%,
+      #000 38%,
+      rgba(0, 0, 0, 0.98) 53%,
+      rgba(0, 0, 0, 0.72) 66%,
+      rgba(0, 0, 0, 0.3) 79%,
+      transparent 100%
+    );
+
+  filter:
+    drop-shadow(
+      0 34px 48px rgba(43, 39, 36, 0.16)
+    )
+    drop-shadow(
+      0 10px 20px rgba(43, 39, 36, 0.08)
+    );
+
+  will-change: transform;
+
+  user-select: none;
+}
+
+/* ================================================================
+   SUBTLE PHOTOGRAPH HIGHLIGHT
+   ================================================================ */
+
+.hero-bouquet__highlight {
+  position: absolute;
+
+  inset: 4% 8% 8%;
+
+  z-index: 2;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at 34% 22%,
+      rgba(255, 250, 242, 0.14),
+      transparent 42%
+    );
+
+  opacity: 0.7;
+
+  mix-blend-mode: screen;
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse 70% 75% at 50% 45%,
+      #000 35%,
+      transparent 92%
+    );
+
+  mask-image:
+    radial-gradient(
+      ellipse 70% 75% at 50% 45%,
+      #000 35%,
+      transparent 92%
+    );
+}
+
+/* ================================================================
+   TABLET
+   ================================================================ */
+
+@media (max-width: 1024px) {
+  .hero-bouquet__img {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* ================================================================
+   MOBILE
+   ================================================================ */
+
+@media (max-width: 640px) {
+  .hero-bouquet__img {
+    aspect-ratio: 3 / 4;
+
+    object-position: 50% 40%;
+  }
+
+  .hero-bouquet__glow {
+    filter: blur(30px);
+  }
+}
+
+/* ================================================================
+   REDUCED MOTION
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bouquet__img {
+    transition: none !important;
+  }
+}
